@@ -42,6 +42,8 @@ func NewAPIServer(listenAdress string) *APIServer {
 func (s *APIServer) Run() {
 	router := mux.NewRouter()
 	router.HandleFunc("/movie", makeHTTPHandleFunc(s.handleMovie))
+	router.HandleFunc("/movie/{id}", makeHTTPHandleFunc(s.handleGetMovie))
+
 	log.Println("JSON API server running on port: ", s.listenAdress)
 	http.ListenAndServe(s.listenAdress, router)
 }
@@ -60,7 +62,9 @@ func (s *APIServer) handleMovie(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *APIServer) handleGetMovie(w http.ResponseWriter, r *http.Request) error {
-	return nil
+	id := mux.Vars(r)["id"]
+	fmt.Println(id)
+	return WriteJSON(w, http.StatusOK, &Movie{})
 }
 
 func (s *APIServer) handleAddMovie(w http.ResponseWriter, r *http.Request) error {
